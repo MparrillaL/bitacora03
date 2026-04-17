@@ -1,6 +1,6 @@
 ## Manuel Parrilla Lahoz 17/04/2026
 
-#BITACORA III
+##BITACORA III
 ## 1. ¿Qué es Syslog? 
 Imagina que el servidor es una aplicación gigante. Syslog es el sistema estándar de mensajería que registra todo lo que pasa en el "backend" del sistema operativo [Conversación previa]. Es como el "LogCat" de Android o la consola de Chrome, pero a nivel de núcleo y servicios [1]
 
