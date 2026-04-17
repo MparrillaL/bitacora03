@@ -9,20 +9,20 @@ Para que no sea un caos de texto, Syslog clasifica cada mensaje usando dos etiqu
 	-Facility: Define el origen. Como desarrollador, te interesan las etiquetas como auth(seguridad/login), cron(tareas programadas) o daemon (proceso que se ejecuta en segundo plano sin interacción directa del usuario[3])
 	-Severity: Define la prioridad de los mensajes, va desde un debug(mensajes de desarrollo) hasta emerg(¡El servidor puede explotar!) y entre medias tienes info,warning y err.[4]
 	
-##3. ¿Dónde lo encuentro? (El mapa FHS)
+## 3. ¿Dónde lo encuentro? (El mapa FHS)
 Siguiendo el estándar FHS (que organiza las estanterías de Linux), los logs están en un lugar que varía constantemente: /var/log
 .
 /var/log/syslog: Es el "cajón de sastre" donde va casi todo.
 /var/log/auth.log: Es el diario de seguridad. Aquí ves quién ha intentado entrar por SSH a tu servidor.
 
-##4. ¿Por qué te importa como futuro desarrollador?
+## 4. ¿Por qué te importa como futuro desarrollador?
 Si tu aplicación web no conecta con la base de datos o el servidor Nginx no arranca, no tienes que adivinar. Usas el comando tail -f /var/log/syslog y verás en tiempo real qué error está lanzando el sistema
 . Es tu herramienta principal para el Troubleshooting [5]
 
-##5. ¿Por qué es una negligencia grave que el archivo /var/log/auth.log tenga permisos de lectura para usuarios no privilegiados?
+## 5. ¿Por qué es una negligencia grave que el archivo /var/log/auth.log tenga permisos de lectura para usuarios no privilegiados?
 Porque este archivo es el "diario de vida" de la seguridad del servidor, en él se registra información crítica, como cada intento de acceso, errores de contraseña y todas las sesiones iniciadas. Si un atacante con acceso limitado puede leer estos registros, podría utilizarlos para realizar ingeniería social al conocer los patrones de conexión de otros usuarios. . Además, el rastro digital permite identificar nombres de usuario válidos que el atacante puede usar para lanzar ataques de fuerza bruta dirigidos, eliminando la necesidad de adivinar cuentas existentes.
 
-##6. ¿Qué información específica (como PIDs, nombres de usuario o direcciones IP) diferencia un intento fallido de conexión remota SSH de un simple fallo de contraseña de un usuario local frente a la pantalla?
+## 6. ¿Qué información específica (como PIDs, nombres de usuario o direcciones IP) diferencia un intento fallido de conexión remota SSH de un simple fallo de contraseña de un usuario local frente a la pantalla?
 Para diferenciarlos, debes fijarte en estos metadatos específicos:
 	-Dirección IP (El rastro de red): Esta es la diferencia fundamental; un intento de conexión remota SSH registrará siempre la dirección IP de origen (por ejemplo, from 192.168.1.50). Por el contrario, un fallo de contraseña local no incluirá ninguna dirección IP, ya que la comunicación no ha viajado por la red.
  
@@ -38,21 +38,21 @@ Para entenderlo podemos verlo como la "caja negra" de un avión. Ya sabemos que 
 8. Protección de la evidencia:
 Para ejecutar la protección de la evidencia y la gestión de registros (Log Management) de forma efectiva, el proceso se resume de la siguiente manera:
 
-###8.1 ¿Cómo se ejecuta?
+### 8.1 ¿Cómo se ejecuta?
 	-Centralización en tiempo real: Se configuran los sistemas para enviar cada evento a un servidor externo seguro en milisegundos, impidiendo que un atacante borre el rastro si compromete la máquina local.
 	
 	-Configuración de Auditoría: En Windows, se activan las "Directivas de auditoría" para accesos a objetos e inicios de sesión; en Ubuntu, se utiliza auditd para vigilar archivos sensibles.
 	
 	-Restricción de Acceso: Se aplican permisos estrictos (PoLP) para que solo usuarios con privilegios elevados puedan leer archivos críticos como /var/log/auth.log.
 	-Automatización: Se emplean scripts en Bash o herramientas como Fail2Ban para filtrar patrones de ataque (como "Failed password") y reaccionar automáticamente.
-###8.2 ¿Qué conseguimos?
+### 8.2 ¿Qué conseguimos?
 	-Integridad de la prueba: La evidencia permanece intacta y disponible para análisis forense incluso si el servidor de producción es destruido o manipulado.
 	-Cumplimiento Legal (RGPD): Se garantiza la trazabilidad exigida por la ley en España, pudiendo demostrar quién accedió a qué datos y cuándo.
 	-Vigilancia Proactiva: El sistema deja de ser una "caja negra" y permite detectar escaneos de red o intentos de fuerza bruta en tiempo real para bloquearlos antes de que tengan éxito [Conversación previa].
 	-Eficiencia en el Soporte: Facilita el troubleshooting o resolución de problemas técnicos al tener un registro histórico fiable de todos los fallos del sistema
 
 
-##BIBLIOGRAFÍA
+## BIBLIOGRAFÍA
 
 [1] [DAM/DAW_SI]UD03Tema01
 [2] https://www.atomix.cl/monitoreo-de-logs-con-tail-y-grep-en-linux/
